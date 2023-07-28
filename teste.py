@@ -1,7 +1,10 @@
-from Cliente import Cliente 
-from Contas import Conta_Corrente
+def cadastro_cliente():
+    nome = input("Digite o nome do Cliente: ")
+    cpf = "0"
+    while type(cpf) != int or cpf < 9999999999 or cpf > 99999999999:
+        try:
+            cpf = int(input("Digite os numeros CPF: "))
+        except:
+            print("CPF invalido.") 
 
-cliente1= Cliente("Cliente1" , 1)
-conta1 = Conta_Corrente(cliente1 , 1 , 111)  
-conta1.imprimir()
-   
+cadastro_cliente()

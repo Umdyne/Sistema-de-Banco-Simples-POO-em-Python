@@ -4,7 +4,7 @@ class Cliente():
         self._nome = nome
         self._cpf = cpf
         self._contaC = 0
-        self._ContaP = 0
+        self._contaP = 0
 
     @property
     def nome(self):
@@ -17,11 +17,19 @@ class Cliente():
     @property
     def contaC(self):
         return self._contaC
+    
+    @contaC.setter
+    def contaC(self, valor):
+        self._contaC = valor
 
     @property
-    def ContaP(self):
-        return self._ContaP
-    
+    def contaP(self):
+        return self._contaP
+
+    @contaP.setter
+    def contaP(self, valor):
+        self._contaP = valor
+        
     def imprimir(self):
         print("Nome: ",self.nome)
         print("CPF: ",self.cpf)

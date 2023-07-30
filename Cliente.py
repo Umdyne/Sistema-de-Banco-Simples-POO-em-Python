@@ -5,6 +5,8 @@ class Cliente():
         self._cpf = cpf
         self._contaC = 0
         self._contaP = 0
+        self._seguro = []
+        self._qtde_seguro = 0
 
     @property
     def nome(self):
@@ -29,6 +31,22 @@ class Cliente():
     @contaP.setter
     def contaP(self, valor):
         self._contaP = valor
+
+    @property
+    def seguro(self):
+        return self._seguro
+
+    @seguro.setter
+    def seguro(self, novo_seguro):
+        self._seguro.append(novo_seguro)
+
+    @property
+    def qtde_seguro(self):
+        return self._qtde_seguro
+
+    @qtde_seguro.setter
+    def qtde_seguro(self, nova_qtde_seguro):
+        self._qtde_seguro = nova_qtde_seguro    
         
     def imprimir(self):
         print("Nome: ",self.nome)

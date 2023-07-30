@@ -1,17 +1,17 @@
 import abc
 from Conta import Conta_Corrente
 from Conta import Conta_Poupanca
-from Cliente import Cliente 
+from Cliente import Cliente
+from Seguro import Seguro_Vida
 
 class Banco():
     def __init__(self):
         self._qtde_contas = 0
         self._clientes = []
         self._contasC = []
-        self._qtdeC = 0
         self._contasP = []
-        self._qtdeP = 0
-        self._qtde_contas_seguros = []
+        self._qtde_contas_seguros = 0
+        self._tributacoes = []
     
 
     @property
@@ -55,9 +55,9 @@ class Banco():
 
             if cliente_encontrado:
                 if cliente_encontrado.contaC == 0:
-                    self._qtdeC += 1
-                    conta_corrente = Conta_Corrente(cpf, self._qtdeC)
-                    cliente_encontrado.contaC = self._qtdeC
+                    self.qtde_contas += 1
+                    conta_corrente = Conta_Corrente(cpf, self.qtde_contas)
+                    cliente_encontrado.contaC = conta_corrente
                     self._contasC.append(conta_corrente)
                     print("Conta corrente criada com sucesso.")
                 else:
@@ -78,15 +78,169 @@ class Banco():
 
             if cliente_encontrado:
                 if cliente_encontrado.contaP == 0:
-                    self._qtdeP += 1
-                    conta_poupanca = Conta_Poupanca(cpf, self._qtdeP)
-                    cliente_encontrado.contaP = self._qtdeP
+                    self.qtde_contas += 1
+                    conta_poupanca = Conta_Poupanca(cpf, self.qtde_contas)
+                    cliente_encontrado.contaP = conta_poupanca
                     self._contasP.append(conta_poupanca)
                     print("Conta poupança criada com sucesso.")
                 else:
                     print("Esse cliente já possui uma conta poupança.")
             else:
                 print("CPF digitado está incorreto ou não encontrado.")                
+
+    def criarSeguro(self):
+        if self.qtde_contas == 0:
+            print("Nenhuma cliente cadastrado para criar seguros")
+        else:
+            cpf = int(input("Digite o CPF do cliente para criar o Seguro de vida: "))
+            cliente_encontrado = None
+            for cliente in self._clientes:
+                if cpf == cliente.cpf:    
+                    cliente_encontrado = cliente
+                    break
+
+            if cliente_encontrado:
+                mensal = int(input("Digite o valor mensal do seguro: "))
+                total = int(input("Digite o valor total do seguro: "))
+                cliente_encontrado.qtde_seguro += 1
+                self._qtde_contas_seguros += 1
+                seguro = Seguro_Vida(mensal, total)
+                cliente_encontrado.seguro = seguro
+                print("Seguro de vida criado.")
+
+            else:
+                print("CPF digitado está incorreto ou não encontrado.")    
+
+    def tributacao(self):
+        soma_seguro = 0
+        soma_corrente = 0
+
+        if self._qtdeC == 0 and self._qtde_contas_seguros == 0:
+            print("Não há valores para serem calculados.")
+        else:
+            for conta in self._contasC:
+                soma_corrente += conta.saldo / 100
+
+            for cliente in self._clientes:
+                if cliente.seguro:
+                    for seguros in cliente.seguro:       
+                        soma_seguro += seguros.valor_mensal / 50
+
+            total = soma_seguro + soma_corrente + (len(self._clientes) * 10)
+            self._tributacoes.append(total)
+            cont = 1
+            for tributacao in self._tributacoes: 
+                print(f"{cont}º tributação = {total:.2f}")
+                cont += 1
+
+    def sacar(self):
+        if self.qtde_contas == 0:
+            print("Nenhuma cliente cadastrado para sacar")
+        else:
+            cpf = int(input("Digite o CPF do cliente para realizar o saque: "))
+            cliente_encontrado = None
+            for cliente in self._clientes:
+                if cpf == cliente.cpf:    
+                    cliente_encontrado = cliente
+                    break
+
+            if cliente_encontrado:
+                if cliente_encontrado.contaP == 0 and cliente_encontrado.contaC == 0:
+                    print("Este cliente não possui contas para realizar saques.")
+                elif cliente_encontrado.contaP != 0 and cliente_encontrado.contaC != 0:
+                    opc = int(input("Seleciona a conta da qual deseja realizar o saque\n1 - Poupança\n2 - Corrente: "))
+                    if opc == 1:
+                        valor = int(input("Digite o valor que deseja sacar: "))
+                        cliente_encontrado.contaP.saque(valor)
+
+                    elif opc == 2:
+                        valor = int(input("Digite o valor que deseja sacar: "))
+                        cliente_encontrado.contaC.saque(valor)
+                    else:
+                        print("Opção invalida.")
+
+                else:
+                    if cliente_encontrado.contaP != 0:
+                        valor = int(input("Digite o valor que deseja sacar: "))
+                        cliente_encontrado.contaP.saque(valor)
+                    else:
+                        valor = int(input("Digite o valor que deseja sacar: "))
+                        cliente_encontrado.contaC.saque(valor)
+                           
+
+            else:
+                print("CPF digitado está incorreto ou não encontrado.")                
+        
+
+    def depositar(self):
+        if self.qtde_contas == 0:
+            print("Nenhuma cliente cadastrado para depositar")
+        else:
+            cpf = int(input("Digite o CPF do cliente para realizar o deposito: "))
+            cliente_encontrado = None
+            for cliente in self._clientes:
+                if cpf == cliente.cpf:    
+                    cliente_encontrado = cliente
+                    break
+
+            if cliente_encontrado:
+                if cliente_encontrado.contaP == 0 and cliente_encontrado.contaC == 0:
+                    print("Este cliente não possui contas para realizar deposito.")
+                elif cliente_encontrado.contaP != 0 and cliente_encontrado.contaC != 0:
+                    opc = int(input("Seleciona a conta da qual deseja realizar o deposito\n1 - Poupança\n2 - Corrente: "))
+                    if opc == 1:
+                        valor = int(input("Digite o valor que deseja depositar: "))
+                        cliente_encontrado.contaP.deposito(valor)
+
+                    elif opc == 2:
+                        valor = int(input("Digite o valor que deseja depositar: "))
+                        cliente_encontrado.contaC.deposito(valor)
+                    else:
+                        print("Opção invalida.")
+
+                else:
+                    if cliente_encontrado.contaP != 0:
+                        valor = int(input("Digite o valor que deseja depositar: "))
+                        cliente_encontrado.contaP.deposito(valor)
+                    else:
+                        valor = int(input("Digite o valor que deseja depositar: "))
+                        cliente_encontrado.contaC.deposito(valor)
+                    
+                 
+            else:
+                print("CPF digitado está incorreto ou não encontrado.")
+
+    def tranferir(self):
+        if self.qtde_contas == 0:
+            print("Nenhuma cliente cadastrado para realizar transferencias")
+        else:
+            conta_partida = int(input("Digite o numero da conta que ira transferir: "))
+            for conta in self._contasC:
+                if conta.numero == conta_partida:
+                    achouS = True
+
+            for conta in self._contasP:
+                if conta.numero == conta_partida:
+                    achouS = True  
+                
+            #tranferencia seleciona qual o tipo do destino
+            conta_destino = int(input("Digite o numero da conta destino: "))
+            for conta in self._contasC:
+                if conta.numero == conta_destino:
+                    achouC = True
+
+            for conta in self._contasP:
+                if conta.numero == conta_destino:
+                    achouC = True                 
+ 
+            if achouS and achouC:
+                print("ok")
+                     
+                 
+            else:
+                print("Um dos/Os dois numeros das contas estão incorretos.")
+
+    
     def menu():
 
         opc = -1
@@ -107,8 +261,27 @@ class Banco():
             if opc == 1:
                 self.cadastro_cliente()
 
-       
+            elif opc == 2:
+                self.criarContaC()
+                
+            elif opc == 3:
+                self.criarContaP()
+
+            elif opc == 4:
+                criarSeguro()
+
+            elif opc == 5:
+                tributacao()
+                
+            elif opc == 6:
+                sacar()
+
+            elif opc == 6:
+                depositar()
+            
 banco = Banco()
 banco._clientes.append(Cliente("c1",1))
 banco.qtde_contas += 1
+banco.criarContaP()
 banco.criarContaC()
+banco.depositar()

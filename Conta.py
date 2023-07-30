@@ -9,6 +9,14 @@ class Conta(abc.ABC):
         self._titular = titular
 
     @property
+    def numero(self):
+        return self._numero
+
+    @property
+    def titular(self):
+        return self._titular
+
+    @property
     def saldo(self):
         return self._saldo
 
@@ -28,6 +36,7 @@ class Conta(abc.ABC):
         if valor > 0:
             self.saldo += valor
             self.historico=("Deposito", valor)
+            print("Deposito realizado.") 
             
         else:
             print("Não pode depositar valor negatico.")
@@ -36,6 +45,7 @@ class Conta(abc.ABC):
         if valor > 0 and valor <= self.saldo:
             self.saldo -= valor
             self.historico=("Saque", valor)
+            print("Saque realizado.") 
         else:
             print("Saldo insuficiente.")
 
@@ -45,6 +55,7 @@ class Conta(abc.ABC):
             destino.saldo += valor
             self.historico=("Transferencia -", valor)
             destino.historico=("Transferencia +", valor)
+            print("Transferencia realizada.") 
         else:
             print("Saldo insuficiente.")
 
@@ -66,7 +77,7 @@ class Conta_Poupanca(Conta):
         super().__init__( titular, numero)
 
     def tributacao(self):
-        return 10 + (self.saldo)/50
+        pass
 
 
 '''        

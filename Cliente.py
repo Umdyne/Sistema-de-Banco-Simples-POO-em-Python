@@ -7,6 +7,7 @@ class Cliente():
         self._contaP = 0
         self._seguro = []
         self._qtde_seguro = 0
+        self._qtde_contas = 0
 
     @property
     def nome(self):
@@ -39,6 +40,15 @@ class Cliente():
     @seguro.setter
     def seguro(self, novo_seguro):
         self._seguro.append(novo_seguro)
+
+    @property
+    def qtde_contas(self):
+        if self._contaC == 0 and self._contaP == 0:
+            return 0
+        elif self._contaC != 0 and self._contaP != 0:
+            return 2
+        else:
+            return 1
 
     @property
     def qtde_seguro(self):

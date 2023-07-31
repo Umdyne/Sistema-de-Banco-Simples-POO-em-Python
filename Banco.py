@@ -8,11 +8,20 @@ class Banco():
     def __init__(self):
         self._qtde_contas = 0
         self._clientes = []
+        self._qtde_clientes = 0
         self._contasC = []
         self._contasP = []
         self._qtde_contas_seguros = 0
         self._tributacoes = []
     
+
+    @property
+    def qtde_clientes(self):
+        return self._qtde_clientes
+
+    @qtde_clientes.setter
+    def qtde_clientes(self, novo):
+        self._qtde_clientes = novo
 
     @property
     def qtde_contas(self):
@@ -39,11 +48,11 @@ class Banco():
          
         cliente  = Cliente(nome, cpf)
         self._clientes.append(cliente)
-        self.qtde_contas += 1
+        self.qtde_clientes += 1
         print("Cadastro Concluido.")
 
     def criarContaC(self):
-        if self.qtde_contas == 0:
+        if self.qtde_clientes == 0:
             print("Nenhuma cliente cadastrado para criar contas")
         else:
             cpf = int(input("Digite o CPF do cliente para criar a Conta Corrente: "))
@@ -66,7 +75,7 @@ class Banco():
                 print("CPF digitado está incorreto ou não encontrado.")
 
     def criarContaP(self):
-        if self.qtde_contas == 0:
+        if self.qtde_clientes == 0:
             print("Nenhuma cliente cadastrado para criar contas")
         else:
             cpf = int(input("Digite o CPF do cliente para criar a Conta Poupança: "))
@@ -89,7 +98,7 @@ class Banco():
                 print("CPF digitado está incorreto ou não encontrado.")                
 
     def criarSeguro(self):
-        if self.qtde_contas == 0:
+        if self.qtde_clientes == 0:
             print("Nenhuma cliente cadastrado para criar seguros")
         else:
             cpf = int(input("Digite o CPF do cliente para criar o Seguro de vida: "))
@@ -134,8 +143,8 @@ class Banco():
                 cont += 1
 
     def sacar(self):
-        if self.qtde_contas == 0:
-            print("Nenhuma cliente cadastrado para sacar")
+        if self.qtde_clientes == 0 or self.qtde_contes == 0:
+            print("Nenhuma cliente ou conta cadastrado para sacar")
         else:
             cpf = int(input("Digite o CPF do cliente para realizar o saque: "))
             cliente_encontrado = None
@@ -150,10 +159,12 @@ class Banco():
                 elif cliente_encontrado.contaP != 0 and cliente_encontrado.contaC != 0:
                     opc = int(input("Seleciona a conta da qual deseja realizar o saque\n1 - Poupança\n2 - Corrente: "))
                     if opc == 1:
+                        print("Saldo atual: ",cliente_encontrado.contaP.saldo)
                         valor = int(input("Digite o valor que deseja sacar: "))
                         cliente_encontrado.contaP.saque(valor)
 
                     elif opc == 2:
+                        print("Saldo atual: ",cliente_encontrado.contaC.saldo)
                         valor = int(input("Digite o valor que deseja sacar: "))
                         cliente_encontrado.contaC.saque(valor)
                     else:
@@ -161,9 +172,11 @@ class Banco():
 
                 else:
                     if cliente_encontrado.contaP != 0:
+                        print("Saldo atual: ",cliente_encontrado.contaP.saldo)
                         valor = int(input("Digite o valor que deseja sacar: "))
                         cliente_encontrado.contaP.saque(valor)
                     else:
+                        print("Saldo atual: ",cliente_encontrado.contaC.saldo)
                         valor = int(input("Digite o valor que deseja sacar: "))
                         cliente_encontrado.contaC.saque(valor)
                            
@@ -173,8 +186,8 @@ class Banco():
         
 
     def depositar(self):
-        if self.qtde_contas == 0:
-            print("Nenhuma cliente cadastrado para depositar")
+        if self.qtde_clientes == 0 or self.qtde_contes == 0:
+            print("Nenhuma cliente ou conta cadastrado para sacar")
         else:
             cpf = int(input("Digite o CPF do cliente para realizar o deposito: "))
             cliente_encontrado = None
@@ -191,10 +204,12 @@ class Banco():
                     if opc == 1:
                         valor = int(input("Digite o valor que deseja depositar: "))
                         cliente_encontrado.contaP.deposito(valor)
+                        print("Saldo atual: ",cliente_encontrado.contaP.saldo)
 
                     elif opc == 2:
                         valor = int(input("Digite o valor que deseja depositar: "))
                         cliente_encontrado.contaC.deposito(valor)
+                        print("Saldo atual: ",cliente_encontrado.contaC.saldo)
                     else:
                         print("Opção invalida.")
 
@@ -202,46 +217,88 @@ class Banco():
                     if cliente_encontrado.contaP != 0:
                         valor = int(input("Digite o valor que deseja depositar: "))
                         cliente_encontrado.contaP.deposito(valor)
+                        print("Saldo atual: ",cliente_encontrado.contaP.saldo)
                     else:
                         valor = int(input("Digite o valor que deseja depositar: "))
                         cliente_encontrado.contaC.deposito(valor)
-                    
+                        print("Saldo atual: ",cliente_encontrado.contaC.saldo)
+                   
                  
             else:
                 print("CPF digitado está incorreto ou não encontrado.")
 
     def tranferir(self):
-        if self.qtde_contas == 0:
-            print("Nenhuma cliente cadastrado para realizar transferencias")
+        if self.qtde_clientes == 0 or self.qtde_contas == 0:
+            print("Nenhuma cliente ou conta cadastrado para sacar")
         else:
+            envia = recebe = False
             conta_partida = int(input("Digite o numero da conta que ira transferir: "))
             for conta in self._contasC:
+                print(conta.numero)
                 if conta.numero == conta_partida:
-                    achouS = True
+                    envia = conta
+                    
 
             for conta in self._contasP:
+                print(conta.numero)
                 if conta.numero == conta_partida:
-                    achouS = True  
+                    envia = conta
+                     
                 
             #tranferencia seleciona qual o tipo do destino
             conta_destino = int(input("Digite o numero da conta destino: "))
             for conta in self._contasC:
+                print(conta.numero)
                 if conta.numero == conta_destino:
-                    achouC = True
+                    recebe = conta
+                    
 
             for conta in self._contasP:
+                print(conta.numero)
                 if conta.numero == conta_destino:
-                    achouC = True                 
+                    recebe = conta
+                                     
  
-            if achouS and achouC:
-                print("ok")
+            if envia and recebe:
+                print("Saldo atual: ",envia.saldo)
+                valor = int(input("Digite o valor para transferir: "))
+                envia.transferencia(recebe,50)
                      
                  
             else:
                 print("Um dos/Os dois numeros das contas estão incorretos.")
 
-    
-    def menu():
+    def print_historico(self):
+        if self.qtde_clientes == 0 or self.qtde_contas == 0:
+            print("Nenhuma cliente ou conta cadastrado para sacar")
+        else:
+            
+            conta_encontrada = False
+            numero = int(input("Digite o numero da conta: "))
+            for conta in self._contasC:
+                if conta.numero == numero:
+                    conta_encontrada = conta            
+  
+            for conta in self._contasP:
+                if conta.numero == numero:
+                    conta_encontrada = conta
+
+            if conta_encontrada:
+                print(conta_encontrada.historico)
+                print("Saldo atual: ",conta_encontrada.saldo)
+
+            else:
+                print("Numero digitado esta incorreto")
+
+    def info(self):
+        print("\nInformções do Banco")
+        print("\nNumero de contas: ",self.qtde_contas)
+        print("\nNome dos clientes")
+        for cliente in self.clientes:
+            print("Nome: ",cliente.nome," | Quantidade de contas:",cliente.qtde_contas," | Quantidade de seguros:",cliente.qtde_seguro)
+              
+                
+    def menu(self):
 
         opc = -1
         while opc != 0:
@@ -256,6 +313,7 @@ class Banco():
             print("8  – Transferir")
             print("9  – Imprimir histórico")
             print("10 - Exibir informações do banco")
+            print(" 0 - Sair")
             opc = int(input("Selecione uma opção: "))
 
             if opc == 1:
@@ -276,12 +334,18 @@ class Banco():
             elif opc == 6:
                 sacar()
 
-            elif opc == 6:
+            elif opc == 7:
                 depositar()
-            
+
+            elif opc == 8:
+                tranferir()
+                
+            elif opc == 9:
+                print_historico()
+
+            elif opc == 10:
+                info()
+           
 banco = Banco()
-banco._clientes.append(Cliente("c1",1))
-banco.qtde_contas += 1
-banco.criarContaP()
-banco.criarContaC()
-banco.depositar()
+banco.menu()
+

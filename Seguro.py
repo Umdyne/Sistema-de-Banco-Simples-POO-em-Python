@@ -18,6 +18,3 @@ class Seguro_Vida:
     @valor_total.setter
     def valor_total(self, novo_valor_total):
         self._valor_total = novo_valor_total
-
-
-s = Seguro_Vida( 10, 10)

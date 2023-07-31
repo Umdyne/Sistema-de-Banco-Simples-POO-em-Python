@@ -78,17 +78,3 @@ class Conta_Poupanca(Conta):
 
     def tributacao(self):
         pass
-
-
-'''        
-c1 = Conta_Corrente("oie", 1)
-c2 = Conta_Corrente("oie2", 2)
-
-c1.deposito(10) 
-print(c1.saldo)
-c1.saque(5) 
-print(c1.saldo)
-c1.transferencia(c2,5) 
-print(c1.saldo , c2.saldo ) 
-print(c1.historico)
-'''
